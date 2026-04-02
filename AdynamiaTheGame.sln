@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36324.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdynamiaTheGame", "AdynamiaTheGame\AdynamiaTheGame\AdynamiaTheGame.csproj", "{D05E455F-4992-420A-8528-6D5F2632614D}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "AdynamiaTheGameContent", "AdynamiaTheGame\AdynamiaTheGameContent\AdynamiaTheGameContent.contentproj", "{3ECDA9C9-2333-412D-ACA4-BB320E3B60D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D05E455F-4992-420A-8528-6D5F2632614D}.Debug|x86.ActiveCfg = Debug|x86
+		{D05E455F-4992-420A-8528-6D5F2632614D}.Debug|x86.Build.0 = Debug|x86
+		{D05E455F-4992-420A-8528-6D5F2632614D}.Release|x86.ActiveCfg = Release|x86
+		{D05E455F-4992-420A-8528-6D5F2632614D}.Release|x86.Build.0 = Release|x86
+		{3ECDA9C9-2333-412D-ACA4-BB320E3B60D7}.Debug|x86.ActiveCfg = Debug|x86
+		{3ECDA9C9-2333-412D-ACA4-BB320E3B60D7}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EC7A045-C808-471E-AE7E-D319BA82F300}
+	EndGlobalSection
+EndGlobal
