@@ -13,7 +13,7 @@ namespace AdynamiaTheGame
 {
     // For y'all
     // Most of this is lowk self-explanatory code
-    class Player
+    public class Player
     {
         // Attributes
           // Physics
