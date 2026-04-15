@@ -15,30 +15,44 @@ namespace AdynamiaTheGame
     // Most of this is lowk self-explanatory code
     class Player
     {
-        // Physics
+        // Attributes
+          // Physics
         public Vector2 Position;
         private Vector2 velocity;
+        public int Direction = 1;
+        public bool IsAttacking;
+        public string CurrentAnimation = "idle";
+
+        // Sword Properties
+        public float SwordRotation;
+        public Rectangle SwordHitbox;
+
+        // Duration of the animation/hitbox visibility
+        private float attackActiveTimer;
+        private float attackVisualDuration = 0.15f;
+
+        // Cooldown Timers
+        private float stabCooldownRemaining = 0f;
+        private float slashCooldownRemaining = 0f;
+
+        // Cooldown Constants (Requirements: 1s for Stab, 3s for Slash)
+        private const float STAB_COOLDOWN_TIME = 1.0f;
+        private const float SLASH_COOLDOWN_TIME = 3.0f;
 
         // Properties
         private const int WIDTH = 32;
         private const int HEIGHT = 64;
         private const int CROUCH_HEIGHT = 32;
-
-        public Rectangle Bounds
-        {
-            get
-            {
-                int h = IsCrouching ? CROUCH_HEIGHT : HEIGHT;
-                return new Rectangle((int)Position.X, (int)Position.Y, WIDTH, h);
-            }
-        }
-
+      
+        private MouseState oldMouse;
+        private KeyboardState oldKB;
+      
         // Player states
         public bool IsAlive { get { return Health > 0f; } }
         public bool IsStunned { get { return stunTimer > 0f; } }
         public bool IsPoisoned { get { return poisonTimer > 0f; } }
 
-        // More properties (player combat properties/states)
+        // More properties (player combat properties/states) dawg, this was from my demo, why are you making it harder for me
         public float MaxHealth = 100f;
         public float Health;
         public float DamageMultiplier = 1f;
@@ -73,7 +87,7 @@ namespace AdynamiaTheGame
         private const float QuickCooldownMax = 0.3f;
         private const float DashCooldownMax = 2f;
         private const float HeavyCooldownMax = 5f;
-        private const float BoonCooldownMax = 3.5f;
+        private const float BoonCooldownMax = 3.5f; //Rename this twin
 
         // Just learned about these, these lowk seem useful
         // Allow for external systems (like the Game1 class) to subscribe to player attacks without needing to modify the Player class itself for each new attack type (kinda paraphrasing the actual docs but you get the point)
@@ -82,8 +96,97 @@ namespace AdynamiaTheGame
         public event Action<float, float> OnHeavyAttack;
         public event Action<float> OnBoonAttack;
 
-        private MouseState oldMouse;
-        private KeyboardState oldKB;
+        public Player(Vector2 startPosition)
+        {
+            Position = startPosition;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            MouseState mouse = Mouse.GetState();
+            KeyboardState key = Keyboard.GetState();
+
+            // 1. Reduce cooldown timers over time
+            if (stabCooldownRemaining > 0) stabCooldownRemaining -= elapsed;
+            if (slashCooldownRemaining > 0) slashCooldownRemaining -= elapsed;
+
+            // 2. Movement logic
+            if (key.IsKeyDown(Keys.A)) { Position.X -= 5; Direction = -1; }
+            if (key.IsKeyDown(Keys.D)) { Position.X += 5; Direction = 1; }
+
+            // 3. Input Handling with Cooldown Checks
+            if (!IsAttacking)
+            {
+                // Right Click: Slash (3s cooldown)
+                if (mouse.RightButton == ButtonState.Pressed && slashCooldownRemaining <= 0)
+                {
+                    SlashUp();
+                    slashCooldownRemaining = SLASH_COOLDOWN_TIME;
+                }
+                // Left Click: Stab (1s cooldown)
+                else if (mouse.LeftButton == ButtonState.Pressed && stabCooldownRemaining <= 0)
+                {
+                    Stab();
+                    stabCooldownRemaining = STAB_COOLDOWN_TIME;
+                }
+                else
+                {
+                    SwordRotation = 0;
+                }
+            }
+            else
+            {
+                // Manage how long the attack hitbox stays on screen
+                attackActiveTimer += elapsed;
+                if (attackActiveTimer >= attackVisualDuration)
+                {
+                    IsAttacking = false;
+                    attackActiveTimer = 0;
+                    CurrentAnimation = "idle";
+                }
+            }
+        }
+
+        public void SlashUp()
+        {
+            int width = 60;
+            int height = 100;
+
+            IsAttacking = true;
+            CurrentAnimation = "slash up";
+            SwordRotation = (Direction == 1) ? -1.0f : 1.0f;
+
+            SwordHitbox = new Rectangle(
+                (int)Position.X + (Direction == 1 ? 10 : -width),
+                (int)Position.Y - 80,
+                width, height
+            );
+            System.Diagnostics.Debug.WriteLine("Slash Performed! 3s Cooldown started.");
+        }
+
+        public void Stab()
+        {
+            int width = 40;
+            int height = 20;
+
+            IsAttacking = true;
+            CurrentAnimation = "stab";
+            SwordRotation = (Direction == 1) ? 0.5f : -0.5f;
+
+            int offset = (Direction == 1) ? 30 : -width - 30;
+            SwordHitbox = new Rectangle((int)Position.X + offset, (int)Position.Y + 10, width, height);
+            System.Diagnostics.Debug.WriteLine("Stab Performed! 1s Cooldown started.");
+        }
+
+        public Rectangle Bounds
+        {
+            get
+            {
+                int h = IsCrouching ? CROUCH_HEIGHT : HEIGHT;
+                return new Rectangle((int)Position.X, (int)Position.Y, WIDTH, h);
+            }
+        }
 
         // Self-explanatory constructor and functions ngl (figure this out yourself)
         public Player(Vector2 startPosition, int groundY)
