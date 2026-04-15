@@ -18,7 +18,7 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
     - name: Restore NuGet Packages
-      run: nuget restore YourGameSolution.sln
+      run: nuget restore AdynamiaTheGame.sln
     - name: Copy XNA MSBuild Targets
       run: |
         $destination = "C:\Program Files (x86)\MSBuild\Microsoft\XNA Game Studio"
