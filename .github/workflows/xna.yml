@@ -1,0 +1,34 @@
+name: XNA CI Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+    - name: Restore NuGet Packages
+      run: nuget restore YourGameSolution.sln
+    - name: Copy XNA MSBuild Targets
+      run: |
+        $destination = "C:\Program Files (x86)\MSBuild\Microsoft\XNA Game Studio"
+        New-Item -ItemType Directory -Force -Path $destination
+        Copy-Item -Path ".\BuildDependencies\XNA Game Studio\*" -Destination $destination -Recurse -Force
+      shell: powershell
+    - name: Build XNA Solution
+      run: msbuild AdynamiaTheGame.sln /p:Configuration=Release /p:Platform="x86"
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: XNA-Game-Release
+        path: AdynamiaTheGame/bin/x86/Release/
