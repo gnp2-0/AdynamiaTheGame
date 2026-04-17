@@ -18,8 +18,7 @@ namespace AdynamiaTheGame
         jumpBoon,
         respawnBoon, //if you die, you will respawn with half health
         poisonCurse, //makes you less durable ?
-        darknessCurse,
-        brobrobrosahur
+        darknessCurse
     }
 
     class Effect
@@ -27,35 +26,59 @@ namespace AdynamiaTheGame
 
         public Texture2D texture;
         public Rectangle location;
+        public float duration = 0f;
         readonly Type type;
+        private readonly Dictionary<string, float> durationsInSeconds = new Dictionary<string, float>() { { "health", 8.0f }, { "speed", 10.0f }, { "jump", 5.0f }, { "respawn", -1.0f }, { "poison", 15.0f }, { "darkness", 20.0f } };
 
         public Effect(Texture2D texture, Rectangle location, Type type)
         {
             this.texture = texture;
             this.location = location;
             this.type = type;
+            switch (this.type)
+            {
+                case Type.healthBoon:
+                    duration = durationsInSeconds["health"];
+                    break;
+                case Type.speedBoon:
+                    duration = durationsInSeconds["speed"];
+                    break;
+                case Type.jumpBoon:
+                    duration = durationsInSeconds["jump"];
+                    break;
+                case Type.respawnBoon:
+                    duration = durationsInSeconds["respawn"];
+                    break;
+                case Type.poisonCurse:
+                    duration = durationsInSeconds["poison"];
+                    break;
+                case Type.darknessCurse:
+                    duration = durationsInSeconds["darkness"];
+                    break;
+            }
+            duration *= 60;
         }
 
         public void applyEffect(Player player)
         {
-            switch ((int)type)
+            switch (type)
             {
-                case 0:
+                case Type.healthBoon:
                     player.ApplyHealth(health: 2);
                     break;
-                case 1:
+                case Type.speedBoon:
                     player.ApplySpeed(speed: 5);
                     break;
-                case 2:
+                case Type.jumpBoon:
                     player.ApplyJump(jump: 2);
                     break;
-                case 3:
+                case Type.respawnBoon:
                     player.ApplyRespawn();
                     break;
-                case 4:
+                case Type.poisonCurse:
                     player.ApplyPoison(poison: 2);
                     break;
-                case 5:
+                case Type.darknessCurse:
                     player.ApplyDarkness();
                     break;
             }

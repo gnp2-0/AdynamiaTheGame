@@ -403,6 +403,7 @@ namespace AdynamiaTheGame
             float pct = Health / MaxHealth;
             spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y - 10, WIDTH, 5), Color.DarkGray);
             spriteBatch.Draw(pixel, new Rectangle((int)Position.X, (int)Position.Y - 10, (int)(WIDTH * pct), 5), Color.LimeGreen);
+            
         }
     }
 }
