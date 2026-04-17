@@ -56,6 +56,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enemy.cs" />
+    <Compile Include="Effect.cs" />
     <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Animation.cs" />
     <Compile Include="IEnemy.cs" />
