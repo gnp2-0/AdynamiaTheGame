@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Adynamia
+namespace AdynamiaTheGame
 {
     // For y'all
     // Most of this is lowk self-explanatory code
