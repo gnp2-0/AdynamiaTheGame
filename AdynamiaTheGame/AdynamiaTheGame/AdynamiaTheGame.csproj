@@ -58,6 +58,9 @@
   <ItemGroup>
     <Compile Include="Enemy.cs" />
     <Compile Include="Effect.cs" />
+    <Compile Include="AnimatedSprite.cs" />
+    <Compile Include="Animation.cs" />
+    <Compile Include="IEnemy.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
