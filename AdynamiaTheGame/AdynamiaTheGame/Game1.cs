@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace AdynamiaTheGame
 {
@@ -18,11 +19,17 @@ namespace AdynamiaTheGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        Texture2D[] effectIcons = new Texture2D[6];
+        string[] effectNames = new string[6];
+        List<Effect> effects = new List<Effect>(); 
+        int width, height;
+        KeyboardState kb, oldKb;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            width = graphics.PreferredBackBufferWidth;
+            height = graphics.PreferredBackBufferHeight;
         }
 
         /// <summary>
@@ -34,7 +41,15 @@ namespace AdynamiaTheGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            kb = Keyboard.GetState();
+            oldKb = Keyboard.GetState();
+            effectNames[0] = "healthBoon";
+            effectNames[1] = "speedBoon";
+            effectNames[2] = "jumpBoon";
+            effectNames[3] = "respawnBoon";
+            effectNames[4] = "poisonCurse";
+            effectNames[5] = "darknessCurse";
+            
             base.Initialize();
         }
 
@@ -48,6 +63,11 @@ namespace AdynamiaTheGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            for (int i = 0; i < effectNames.Length; i++)
+            {
+                effectIcons[i] = Content.Load<Texture2D>(effectNames[i]);
+                effects.Add(new Effect(effectIcons[i], new Rectangle(width - ((i + 1) * 50), 0, 50, 50), (Type)i));
+            }
         }
 
         /// <summary>
@@ -71,7 +91,12 @@ namespace AdynamiaTheGame
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            kb = Keyboard.GetState();
+            oldKb = kb;
+            foreach (Effect effect in effects)
+            {
+                --effect.duration;
+            }
             base.Update(gameTime);
         }
 
@@ -84,6 +109,16 @@ namespace AdynamiaTheGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            for (int i = 0; i < effects.Count; i++)
+            {
+                if (kb.IsKeyDown(Keys.Tab))
+                {
+                    if (effects[i].duration > 0)
+                        spriteBatch.Draw(effects[i].texture, effects[i].location, Color.White);
+                }
+            }
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
